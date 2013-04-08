@@ -1,0 +1,16 @@
+# ignore emacs backups
+*~
+\#*#
+
+# local/dynamic files
+log/
+tmp/
+.sass-cache
+.sass-cache/*
+
+# Annoying Apple crap
+.DS_*
+
+# project management
+subl
+subl/*
