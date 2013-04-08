@@ -13,6 +13,7 @@ gem "bootstrap-sass"
 gem "foreman"
 gem "twilio-ruby"
 gem "mailgun"
+gem "redis"
 
 group :test, :development do
   gem "sinatra-reloader"

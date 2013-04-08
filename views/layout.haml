@@ -1,0 +1,22 @@
+!!!
+%html{:lang => "en"}
+  %head
+    %meta{:charset => "utf-8"}
+      %title= "Where the fuck is Dylan?"
+      %meta{:content => "width=device-width, initial-scale=1.0", :name => "viewport"}
+      %meta{:content => "", :name => "description"}
+      %meta{:content => "Dylan Fitzgerald", :name => "author"}
+
+    = haml :_styles
+    = haml :_typekit
+    = erb :_analytics
+
+  %body
+
+    = haml :_header
+
+    %div= yield
+
+    = haml :_footer
+
+    = haml :_javascripts

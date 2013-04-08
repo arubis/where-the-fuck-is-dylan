@@ -1,0 +1,7 @@
+- redis = Redis.new
+
+.container
+  .row
+    .span8.offset2
+      .hero-unit.main
+        %h1.where= redis.get("location")
