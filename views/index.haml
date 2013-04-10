@@ -4,4 +4,4 @@
       .hero-unit.main
         %h1.where= REDIS.lindex("location", -1)
         %p.nationality last seen in
-          = REDIS.lindex("actual_location", -1)
+        = REDIS.lindex("actual_location", -1)
