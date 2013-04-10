@@ -34,6 +34,8 @@ post '/' do
 
 	# get that location into redis stat!
     begin
+      message = "Got your message, #{params[:from]}!\n"
+
       raise "Missing parameters" if params[:body].nil?
       # raise "AccountSid mismatch" if params[:AccountSid] != @account_sid
     
@@ -42,10 +44,10 @@ post '/' do
       REDIS.bgsave
 
       rescue Exception => errormsg
-      	message = message + "Got your message (#{params[:body]}), #{params[:from]}, but had a error: #{errormsg}"
+      	message = message + "But had a error: #{errormsg}"
 
       else
-      	message = message + "Got your message, #{params[:from]}, and it's live!"
+      	message = message + "And it's live!"
     end
 
 
