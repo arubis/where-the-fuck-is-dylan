@@ -34,14 +34,14 @@ post '/' do
 
 	# get that location into redis stat!
     begin
-      message = "Got your message, #{params[:From]}!\n"
+      message = "Got your message, #{params[:From]} in #{params[:FromCountry]}!\n"
 
       raise "Missing parameters (params contains {#{params.inspect})" if params[:Body].nil?
       # raise "AccountSid mismatch" if params[:AccountSid] != @account_sid
     
       REDIS.rpush 'location', params[:Body]
-      REDIS.rpush 'actual_location', params[:FromCountry]
-      REDIS.bgsave
+      REDIS.rpush 'actual_location', params[:FromCountry] if !params[:FromCountry].nil?
+      # REDIS.bgsave ### rediscloud doesn't allow this
 
       rescue Exception => errormsg
       	message = message + "But had a error: #{errormsg}"
