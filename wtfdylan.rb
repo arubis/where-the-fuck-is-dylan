@@ -3,11 +3,22 @@ require 'sinatra'
 
 configure do
   require 'redis'
+  require 'twilio-ruby'
+
+  # put your own credentials here
+   account_sid = "ACaf8cca4999752edc5deb7edacbbc7350"
+   auth_token = "904cafb05863471d96567cecfdbd4cf5"
+   from = '+17139994373'
+ 
+   # set up a client to talk to the Twilio REST API
+   @client = Twilio::REST::Client.new account_sid, auth_token
+   @account = @client.account
+
 end
 
 configure :testing, :development do
   REDIS = Redis.new
-  REDIS.set("location", "AFRICA BITCHES")
+  REDIS.rpush 'location', 'AFRICA!'
 end
 
 configure :production do
@@ -17,4 +28,30 @@ end
 
 get '/' do
     haml :index
+end
+
+post '/' do
+
+	# get that location into redis stat!
+    begin
+      raise "Missing parameters" if params[:body].nil?
+      # raise "AccountSid mismatch" if params[:AccountSid] != @account_sid
+    
+      REDIS.rpush 'location', params[:body]
+      REDIS.rpush 'actual_location', params[:FromCountry]
+      REDIS.bgsave
+
+      rescue Exception => errormsg
+      	message = message + "Got your message (#{params[:body]}), #{params[:from]}, but had a error: #{errormsg}"
+
+      else
+      	message = message + "Got your message, #{params[:from]}, and it's live!"
+    end
+
+
+    twiml = Twilio::TwiML::Response.new do |r|
+        r.Sms message
+    end
+    twiml.text 
+
 end
