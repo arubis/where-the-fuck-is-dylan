@@ -41,6 +41,7 @@ post '/' do
     
       REDIS.rpush 'location', params[:Body]
       REDIS.rpush 'actual_location', params[:FromCountry] if !params[:FromCountry].nil?
+      REDIS.rpush 'params', "#{params.inspect}"
       # REDIS.bgsave ### rediscloud doesn't allow this
 
       rescue Exception => errormsg
@@ -50,7 +51,7 @@ post '/' do
       	message = message + "And it's live!"
 
         # temporary informational extension
-        message = message + "Params: #{params.inspect}"
+
     end
 
 
