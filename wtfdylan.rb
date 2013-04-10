@@ -34,12 +34,12 @@ post '/' do
 
 	# get that location into redis stat!
     begin
-      message = "Got your message, #{params[:from]}!\n"
+      message = "Got your message, #{params[:From]}!\n"
 
-      raise "Missing parameters" if params[:body].nil?
+      raise "Missing parameters (params contains {#{params.inspect})" if params[:Body].nil?
       # raise "AccountSid mismatch" if params[:AccountSid] != @account_sid
     
-      REDIS.rpush 'location', params[:body]
+      REDIS.rpush 'location', params[:Body]
       REDIS.rpush 'actual_location', params[:FromCountry]
       REDIS.bgsave
 
