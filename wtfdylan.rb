@@ -48,6 +48,9 @@ post '/' do
 
       else
       	message = message + "And it's live!"
+
+        # temporary informational extension
+        message = message + "Params: #{params.inspect}"
     end
 
 
