@@ -14,3 +14,7 @@ tmp/
 # project management
 subl
 subl/*
+
+# local management
+.rvm*
+.pow*
