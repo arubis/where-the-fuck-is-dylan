@@ -5,15 +5,14 @@ configure do
   require 'redis'
   require 'twilio-ruby'
 
-  # put your own credentials here
-   account_sid = "ACaf8cca4999752edc5deb7edacbbc7350"
-   auth_token = "904cafb05863471d96567cecfdbd4cf5"
-   from = '+17139994373'
- 
-   # set up a client to talk to the Twilio REST API
-   @client = Twilio::REST::Client.new account_sid, auth_token
-   @account = @client.account
+  # Set up Twilio
+  account_sid = ENV["TWILIO_SID"]
+  auth_token = ENV["TWILIO_AUTH"]
+  from = ENV["TWILIO_FROM"]  
 
+  # set up a client to talk to the Twilio REST API
+  @client = Twilio::REST::Client.new account_sid, auth_token
+  @account = @client.account
 end
 
 configure :testing, :development do
@@ -22,6 +21,7 @@ configure :testing, :development do
 end
 
 configure :production do
+  # Set up RedisCloud
   uri = URI.parse(ENV["REDISCLOUD_URL"])
   REDIS = Redis.new(:host => uri.host, :port => uri.port, :password => uri.password)
 end
@@ -44,7 +44,6 @@ post '/' do
       REDIS.rpush 'location', params[:Body]
       REDIS.rpush 'actual_location', params[:FromCountry] if !params[:FromCountry].nil?
       REDIS.rpush 'params', "#{params.inspect}"
-      # REDIS.bgsave ### rediscloud doesn't allow this
 
       rescue Exception => errormsg
       	message = message + "But had a error: #{errormsg}"
@@ -57,6 +56,13 @@ post '/' do
     twiml = Twilio::TwiML::Response.new do |r|
         r.Sms message
     end
-    twiml.text 
+    twiml.text
+
+
+get '/privacy' do     #hilarious, I know
+  "It's just me: one author, one user."
+  return
+end
+
 
 end
