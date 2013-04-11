@@ -33,36 +33,34 @@ end
 post '/' do
 
 	# get that location into redis stat!
-    begin
-      message = "Got your message, #{params[:From]}"
-      message += " in #{params[:FromCountry]}" if !params[:FromCountry].nil?
-      message += "!\n"
+  begin
+    message = "Got your message, #{params[:From]}"
+    message += " in #{params[:FromCountry]}" if !params[:FromCountry].nil?
+    message += "!\n"
 
-      raise "Missing parameters (params contains {#{params.inspect})" if params[:Body].nil?
-      # raise "AccountSid mismatch" if params[:AccountSid] != @account_sid
+    raise "Missing parameters (params contains {#{params.inspect})" if params[:Body].nil?
+    # raise "AccountSid mismatch" if params[:AccountSid] != @account_sid
     
-      REDIS.rpush 'location', params[:Body]
-      REDIS.rpush 'actual_location', params[:FromCountry] if !params[:FromCountry].nil?
-      REDIS.rpush 'params', "#{params.inspect}"
+    REDIS.rpush 'location', params[:Body]
+    REDIS.rpush 'actual_location', params[:FromCountry] if !params[:FromCountry].nil?
+    REDIS.rpush 'params', "#{params.inspect}"
 
-      rescue Exception => errormsg
-      	message = message + "But had a error: #{errormsg}"
+    rescue Exception => errormsg
+    	message = message + "But had a error: #{errormsg}"
 
-      else
-      	message = message + "And it's live!"
-    end
+    else
+    	message = message + "And it's live!"
+  end
 
 
-    twiml = Twilio::TwiML::Response.new do |r|
-        r.Sms message
-    end
-    twiml.text
+  twiml = Twilio::TwiML::Response.new do |r|
+      r.Sms message
+  end
+  twiml.text
+end
 
 
 get '/privacy' do     #hilarious, I know
   "It's just me: one author, one user."
   return
-end
-
-
 end
