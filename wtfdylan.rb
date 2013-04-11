@@ -34,7 +34,9 @@ post '/' do
 
 	# get that location into redis stat!
     begin
-      message = "Got your message, #{params[:From]} in #{params[:FromCountry]}!\n"
+      message = "Got your message, #{params[:From]}"
+      message += " in #{params[:FromCountry]}" if !params[:FromCountry].nil?
+      message += "!\n"
 
       raise "Missing parameters (params contains {#{params.inspect})" if params[:Body].nil?
       # raise "AccountSid mismatch" if params[:AccountSid] != @account_sid
@@ -49,9 +51,6 @@ post '/' do
 
       else
       	message = message + "And it's live!"
-
-        # temporary informational extension
-
     end
 
 
