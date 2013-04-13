@@ -26,6 +26,8 @@ configure :production do
   REDIS = Redis.new(:host => uri.host, :port => uri.port, :password => uri.password)
 end
 
+set :haml, :format => :html5
+
 get '/' do
     haml :index
 end
@@ -58,7 +60,6 @@ post '/' do
   end
   twiml.text
 end
-
 
 get '/privacy' do     #hilarious, I know
   "It's just me: one author, one user."
