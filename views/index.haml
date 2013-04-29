@@ -1,6 +1,8 @@
+- checkin = YAML::load(REDIS.lindex('checkin', -1))
 .container
   .row
     .span8.offset2
       .hero-unit.main
-        %h1.where= REDIS.lindex("location", -1)
-        %p.nationality= "last seen in " + REDIS.lindex("actual_location", -1)
+        %h1.where= checkin.message
+        %p.nationality= checkin.location_s
+        %p.timestamp= checkin.timestamp

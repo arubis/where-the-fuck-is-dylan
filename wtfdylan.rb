@@ -4,6 +4,8 @@ require 'sinatra'
 configure do
   require 'redis'
   require 'twilio-ruby'
+  require 'Date'
+  require 'yaml'
 
   # Set up Twilio
   account_sid = ENV["TWILIO_SID"]
@@ -16,6 +18,8 @@ configure do
 end
 
 configure :testing, :development do
+#  require 'sinatra/reloader'
+
   REDIS = Redis.new
   REDIS.rpush 'location', 'AFRICA!'
 end
@@ -32,10 +36,42 @@ get '/' do
     haml :index
 end
 
+class CheckIn
+  def initialize(params)
+    @params = params
+    @timestamp = DateTime.now
+  end
+
+  def message
+    @params['Body']
+  end
+
+  def location_s
+    return nil if @params['FromCity'].nil? && @params['FromState'].nil? && @params['FromCountry'].nil?
+
+    @i = "confirmed seen in "
+    @i += @params['FromCity'] + " / " if !@params['FromCity'].nil?
+    @i += @params['FromState'] + " / " if !@params['FromState'].nil?
+    @i += @params['FromCountry'] if !@params['FromCountry'].nil?
+
+    @i
+  end
+
+  def mobile_number
+    @params['From']
+  end
+
+  def timestamp
+    @timestamp.rfc822
+  end
+
+end
+
 post '/' do
 
 	# get that location into redis stat!
   begin
+
     message = "Got your message, #{params[:From]}"
     message += " in #{params[:FromCountry]}" if !params[:FromCountry].nil?
     message += "!\n"
@@ -43,9 +79,12 @@ post '/' do
     raise "Missing parameters (params contains {#{params.inspect})" if params[:Body].nil?
     # raise "AccountSid mismatch" if params[:AccountSid] != @account_sid
     
-    REDIS.rpush 'location', params[:Body]
-    REDIS.rpush 'actual_location', params[:FromCountry] if !params[:FromCountry].nil?
-    REDIS.rpush 'params', "#{params.inspect}"
+    # REDIS.rpush 'location', params[:Body]
+    # REDIS.rpush 'actual_location', params[:FromCountry] if !params[:FromCountry].nil?
+    # REDIS.rpush 'params', "#{params.inspect}"
+
+    checkin = CheckIn.new(params)
+    REDIS.rpush 'checkin', YAML::dump(checkin)
 
     rescue Exception => errormsg
     	message = message + "But had a error: #{errormsg}"
