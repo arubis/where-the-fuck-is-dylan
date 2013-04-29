@@ -4,7 +4,7 @@ require 'sinatra'
 configure do
   require 'redis'
   require 'twilio-ruby'
-  require 'Date'
+  # require 'Date'
   require 'yaml'
 
   # Set up Twilio
