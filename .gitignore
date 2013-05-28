@@ -18,3 +18,4 @@ subl/*
 # local management
 .rvm*
 .pow*
+.ruby-gemset
