@@ -61,6 +61,10 @@ class CheckIn
     @params['From']
   end
 
+  def mobile_obfs
+    mobile_number[0..-4] + "xxx"
+  end
+
   def timestamp
     @timestamp.rfc822
   end
