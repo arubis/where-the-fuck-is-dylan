@@ -57,12 +57,13 @@ class CheckIn
     @i
   end
 
-  def mobile_number
+  def from
     @params['From']
   end
 
-  def mobile_obfs
-    mobile_number[0..-4] + "xxx"
+  def from_s
+    @from = "From "
+    @from += from[0..-4] if 
   end
 
   def timestamp
